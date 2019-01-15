@@ -47,3 +47,6 @@ kibana-deployment.yaml  kibana-service.yaml
 minikube service kibana
 Opening kubernetes service default/kibana in default browser...
 ```
+
+## Metricbeats
+Metricbeats collects periodically some stats from services and operating system. Deploy it in Kubernetes with the following files.
