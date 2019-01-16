@@ -62,5 +62,32 @@ Filebeat is installed as a agent in each pod. It collects log events which is se
 
 ## APM Server
 APM Server collects info from APM Agent which are installed on differents pods. This information is transformed by APM and saved in Elastic. 
-## kubectl - Cheat Sheet
-[cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+
+## Tips
+### kubectl - Cheat Sheet
+
+- [cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+
+### kubectl-autocomplete
+
+- minikube
+
+``` bash
+#BASH
+source <(minikube completion bash) # setup autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(minikube completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+#ZSH
+source <(minikube completion zsh)  # setup autocomplete in zsh into the current shell
+echo "if [ $commands[minikube] ]; then source <(minikube completion zsh); fi" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+```
+
+- kubectl
+
+``` bash
+#BASH
+source <(kubectl completion bash) # setup autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+#ZSH
+source <(kubectl completion zsh)  # setup autocomplete in zsh into the current shell
+echo "if [ $commands[kubectl] ]; then source <(kubectl completion zsh); fi" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+```
