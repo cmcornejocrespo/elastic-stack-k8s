@@ -50,3 +50,6 @@ Opening kubernetes service default/kibana in default browser...
 
 ## Metricbeats
 Metricbeats collects periodically some stats from services and operating system. Deploy it in Kubernetes with the following files.
+
+### kube-state-metrics
+As Metricbeat documentation said (https://www.elastic.co/guide/en/beats/metricbeat/current/running-on-kubernetes.html#_deploy) is necessary deploy kube-state-metrics to get some metrics of kubernetes system.
