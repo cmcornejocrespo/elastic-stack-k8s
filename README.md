@@ -59,3 +59,6 @@ Deploy kube-state-metrics using official repo kubernetes folder: https://github.
 
 ## Filebeat
 Filebeat is installed as a agent in each pod. It collects log events which is sended to Elasticsearch. 
+
+## APM Server
+APM Server collects info from APM Agent which are installed on differents pods. This information is transformed by APM and saved in Elastic. 
