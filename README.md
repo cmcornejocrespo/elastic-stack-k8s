@@ -1,9 +1,10 @@
 # Start Local Kubernetes
 ``` bash
-minikube start
+# mirroring aks k8s version
+minikube start --kubernetes-version v1.11.5 --cpus 2 --memory 4096
 ```
 
-## Desplay active services
+## Display active services
 ``` bash
 kubectl get services
 NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
@@ -16,19 +17,18 @@ minikube dashboard
 ```
 
 # Set up the cluster
-## Set up all services
-In config folder start all deploy files: 
+## Deploy all services
 ``` bash
 kubectl create -Rf config/.
 ```
 
-## Set down the cluster 
+## Delete all services 
 ``` bash
-kubectl create -Rf config/.
+kubectl delete -Rf config/.
 ```
 
 ## Elasticsearch
-Files to deploy elasticsearch are in config/elasticsearch folder. 
+Files to deploy elasticsearch are in config/elasticsearch folder.
 ``` bash
 ls config/elasticsearch/
 elasticsearch-deployment.yaml  elasticsearch_service.yaml
@@ -42,7 +42,7 @@ ls config/kibana/
 kibana-deployment.yaml  kibana-service.yaml
 ```
 
-### Expose Kibana service 
+### Expose Kibana service via minikube 
 ``` bash
 minikube service kibana
 Opening kubernetes service default/kibana in default browser...
@@ -62,3 +62,32 @@ Filebeat is installed as a agent in each pod. It collects log events which is se
 
 ## APM Server
 APM Server collects info from APM Agent which are installed on differents pods. This information is transformed by APM and saved in Elastic. 
+
+## Tips
+### kubectl - Cheat Sheet
+
+- [cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+
+### kubectl-autocomplete
+
+- minikube
+
+``` bash
+#BASH
+source <(minikube completion bash) # setup autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(minikube completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+#ZSH
+source <(minikube completion zsh)  # setup autocomplete in zsh into the current shell
+echo "if [ $commands[minikube] ]; then source <(minikube completion zsh); fi" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+```
+
+- kubectl
+
+``` bash
+#BASH
+source <(kubectl completion bash) # setup autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+#ZSH
+source <(kubectl completion zsh)  # setup autocomplete in zsh into the current shell
+echo "if [ $commands[kubectl] ]; then source <(kubectl completion zsh); fi" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+```
