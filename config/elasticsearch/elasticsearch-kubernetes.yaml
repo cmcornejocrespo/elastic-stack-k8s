@@ -4,23 +4,21 @@ kind: Deployment
 metadata:
   name: elasticsearch
   labels:
-    componet: elasticsearch
+    app: elasticsearch
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: elasticsearch
+      app: elasticsearch
   template:
     metadata:
       labels:
-        component: elasticsearch
+        app: elasticsearch
     spec:
       containers:
       - env:
           - name: ES_JAVA_OPTS
             value: -Xms512m -Xmx512m
-          - name: discovery.type
-            value: single-node
         image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
         name: elasticsearch
         ports:
@@ -29,18 +27,25 @@ spec:
         - containerPort: 9300
           protocol: TCP
         volumeMounts:
-          - mountPath: /usr/share/elasticsearch/data
-            name: elasticsearch-data
+          - name: elasticsearch-data
+            mountPath: /usr/share/elasticsearch/data
+          - name: elasticsearch-config
+            mountPath: /usr/share/elasticsearch/elasticsearch.yml
+            readOnly: true
+            subPath: elasticsearch.yml        
       volumes:
       - name: elasticsearch-data
         persistentVolumeClaim:
           claimName: elasticsearch-data
+      - name: elasticsearch-config
+        configMap:
+          name: elasticsearch-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    componet: elasticsearch
+    app: elasticsearch
   name: elasticsearch-data
 spec:
   accessModes:
@@ -51,11 +56,24 @@ spec:
 status: {}
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  labels:
+    app: elasticsearch
+data:
+  elasticsearch.yml: |-
+    cluster.name: elasticsearch-cluster
+    network.host: 0.0.0.0
+    discovery.zen.minimum_master_nodes: 1
+    discovery.type: single-node
+---    
+apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch
   labels:
-    component: elasticsearch
+    app: elasticsearch
 spec:
   ports:
   - port: 9200
@@ -67,4 +85,34 @@ spec:
     protocol: TCP
     name: http2
   selector:
-    component: elasticsearch
+    app: elasticsearch
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: sysctl-conf
+  name: sysctl-conf
+spec:
+  template:
+    metadata:
+      labels:
+        app: sysctl-conf
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - sysctl -w vm.max_map_count=262166 && while true; do sleep 86400; done
+        image: busybox:1.26.2
+        name: sysctl-conf
+        resources:
+          limits:
+            cpu: 10m
+            memory: 50Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        securityContext:
+          privileged: true
+      terminationGracePeriodSeconds: 1
