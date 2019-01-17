@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,3 +27,18 @@ spec:
             - containerPort: 5601
               name: http
               protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  labels:
+    component: kibana
+spec:
+  type: LoadBalancer
+  selector:
+    component: kibana
+  ports:
+    - name: http
+      port: 5601
+      protocol: TCP
