@@ -27,21 +27,6 @@ kubectl create -Rf config/.
 kubectl delete -Rf config/.
 ```
 
-## Elasticsearch
-Files to deploy elasticsearch are in config/elasticsearch folder.
-``` bash
-ls config/elasticsearch/
-elasticsearch-deployment.yaml  elasticsearch_service.yaml
-```
-
-## Kibana
-### Config files
-Files to deploy Kibana are located in config/kibana folder.
-``` bash
-ls config/kibana/
-kibana-deployment.yaml  kibana-service.yaml
-```
-
 ### Expose Kibana service via minikube 
 ``` bash
 minikube service kibana
