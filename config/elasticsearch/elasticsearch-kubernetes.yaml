@@ -15,6 +15,22 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      initContainers:
+      - name: init-sysctl
+        image: busybox:1.27.2
+        command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        resources:
+          limits:
+            cpu: 10m
+            memory: 50Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        securityContext:
+          privileged: true
       containers:
       - env:
           - name: ES_JAVA_OPTS
@@ -26,6 +42,24 @@ spec:
           protocol: TCP
         - containerPort: 9300
           protocol: TCP
+        livenessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+        readinessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
         volumeMounts:
           - name: elasticsearch-data
             mountPath: /usr/share/elasticsearch/data
@@ -52,7 +86,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi
+      storage: 10Gi
 status: {}
 ---
 apiVersion: v1
@@ -79,40 +113,10 @@ spec:
   - port: 9200
     targetPort: 9200
     protocol: TCP
-    name: http
+    name: http-1
   - port: 9300
     targetPort: 9300
     protocol: TCP
-    name: http2
+    name: http-2
   selector:
     app: elasticsearch
----
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  labels:
-    app: sysctl-conf
-  name: sysctl-conf
-spec:
-  template:
-    metadata:
-      labels:
-        app: sysctl-conf
-    spec:
-      containers:
-      - command:
-        - sh
-        - -c
-        - sysctl -w vm.max_map_count=262166 && while true; do sleep 86400; done
-        image: busybox:1.26.2
-        name: sysctl-conf
-        resources:
-          limits:
-            cpu: 10m
-            memory: 50Mi
-          requests:
-            cpu: 10m
-            memory: 50Mi
-        securityContext:
-          privileged: true
-      terminationGracePeriodSeconds: 1
