@@ -9,12 +9,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      k8s-app: kube-state-metrics
+      app: kube-state-metrics
   replicas: 1
   template:
     metadata:
       labels:
-        k8s-app: kube-state-metrics
+        app: kube-state-metrics
     spec:
       serviceAccountName: kube-state-metrics
       containers:
@@ -162,7 +162,7 @@ metadata:
   name: kube-state-metrics
   namespace: kube-system
   labels:
-    k8s-app: kube-state-metrics
+    app: kube-state-metrics
   annotations:
     prometheus.io/scrape: 'true'
 spec:
@@ -176,4 +176,4 @@ spec:
     targetPort: telemetry
     protocol: TCP
   selector:
-    k8s-app: kube-state-metrics
+    app: kube-state-metrics

@@ -5,7 +5,7 @@ metadata:
   name: metricbeat-daemonset-config
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 data:
   metricbeat.yml: |-
     metricbeat.config.modules:
@@ -38,7 +38,7 @@ metadata:
   name: metricbeat-daemonset-modules
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 data:
   system.yml: |-
     - module: system
@@ -91,12 +91,12 @@ metadata:
   name: metricbeat
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 spec:
   template:
     metadata:
       labels:
-        k8s-app: metricbeat
+        app: metricbeat
     spec:
       serviceAccountName: metricbeat
       terminationGracePeriodSeconds: 30
@@ -182,7 +182,7 @@ metadata:
   name: metricbeat-deployment-config
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 data:
   metricbeat.yml: |-
     metricbeat.config.modules:
@@ -208,7 +208,7 @@ metadata:
   name: metricbeat-deployment-modules
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 data:
   # This module requires `kube-state-metrics` up and running under `kube-system` namespace
   kubernetes.yml: |-
@@ -232,12 +232,12 @@ metadata:
   name: metricbeat
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 spec:
   template:
     metadata:
       labels:
-        k8s-app: metricbeat
+        app: metricbeat
     spec:
       serviceAccountName: metricbeat
       hostNetwork: true
@@ -312,7 +312,7 @@ kind: ClusterRole
 metadata:
   name: metricbeat
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 rules:
 - apiGroups: [""]
   resources:
@@ -343,5 +343,5 @@ metadata:
   name: metricbeat
   namespace: default
   labels:
-    k8s-app: metricbeat
+    app: metricbeat
 ---
