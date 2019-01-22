@@ -148,39 +148,3 @@ metadata:
   namespace: default
   labels:
     app: filebeat
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  namespace: default
-  name: filebeat-dashboard-init
-spec:
-  template:
-    spec:
-      containers:
-        - name: filebeat-init
-          image: docker.elastic.co/beats/filebeat:6.5.4
-          command: [ "filebeat", "setup", "--dashboards",
-                     "-E", "output.logstash.enabled=false",
-                     "-E", 'output.elasticsearch.hosts=["elasticsearch:9200"]',
-                     "-E", 'setup.kibana.host="kibana:5601"' ]
-      restartPolicy: Never
-  backoffLimit: 4
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  namespace: default
-  name: filebeat-template-init
-spec:
-  template:
-    spec:
-      containers:
-        - name: filebeat-template-init
-          image: docker.elastic.co/beats/filebeat:6.5.4
-          command: [ "filebeat", "setup", "--template",
-                     "-E", "output.logstash.enabled=false",
-                     "-E", 'output.elasticsearch.hosts=["elasticsearch:9200"]',
-                     "-E", 'setup.kibana.host="kibana:5601"' ]
-      restartPolicy: Never
-  backoffLimit: 4
