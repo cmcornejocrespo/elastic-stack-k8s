@@ -109,8 +109,8 @@ data:
       containers.ids:
       - "*"
       processors:
-        - add_kubernetes_metadata:
-            in_cluster: true
+      - add_kubernetes_metadata:
+          in_cluster: true
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
