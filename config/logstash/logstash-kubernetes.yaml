@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  labels:
+    app: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+        - name: logstash
+          image: docker.elastic.co/logstash/logstash:6.5.4
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+            - containerPort: 9600
+              protocol: TCP
+            - containerPort: 5555
+              protocol: TCP
+          volumeMounts:
+            - name: logstash-config
+              mountPath: /usr/share/logstash/logstash.yml
+              subPath: logstash.yml
+            - name: logstash-config-pipeline
+              mountPath: /usr/share/logstash/pipeline/logstash.conf
+              subPath: logstash.conf
+      volumes:
+        - name: logstash-config
+          configMap:
+            name: logstash-config
+        - name: logstash-config-pipeline
+          configMap:
+            name: logstash-config-pipeline
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  labels:
+    app: logstash-config
+data:
+  logstash.yml: |-
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+    xpack:
+      monitoring:
+      enabled: true
+      elasticsearch.url: http://elasticsearch:9200
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config-pipeline
+  labels:
+    app: logstash-config-pipeline
+data:
+  logstash.conf: |-
+    input {
+      beats {
+          port => 5555
+      }
+    }
+    filter {
+        grok {
+          match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}%{SPACE}\[%{GREEDYDATA:transaction.id},%{SPACE}%{GREEDYDATA:trace.id}\]%{SPACE}%{LOGLEVEL:level}%{SPACE}%{SPACE}%{INT:tenant_id}%{SPACE}-%{SPACE}-%{SPACE}-%{SPACE}\[(?<thread>[^\]]+)\]%{SPACE}%{JAVACLASS:java_class}%{SPACE}:%{GREEDYDATA:log_message}" }
+        }
+        kv {
+          include_keys => [ "transaction.id", "trace.id" ]
+          source => "mdc"
+        }
+        mutate {
+                convert => { "transaction.id" => "string" }
+            }
+        mutate {
+            convert => { "trace.id" => "string" }
+        }
+    }
+    output {
+      elasticsearch {
+          hosts => ["elasticsearch:9200"]
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+  labels:
+    app: logstash
+spec:
+  selector:
+    app: logstash
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+      name: http-1
+    - port: 9600
+      targetPort: 9600
+      protocol: TCP
+      name: http-2
+    - port: 5555
+      targetPort: 5555
+      protocol: TCP
+      name: http-3

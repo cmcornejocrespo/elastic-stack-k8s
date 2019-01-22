@@ -4,23 +4,37 @@ kind: Deployment
 metadata:
   name: elasticsearch
   labels:
-    componet: elasticsearch
+    app: elasticsearch
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: elasticsearch
+      app: elasticsearch
   template:
     metadata:
       labels:
-        component: elasticsearch
+        app: elasticsearch
     spec:
+      initContainers:
+      - name: init-sysctl
+        image: busybox:1.27.2
+        command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        resources:
+          limits:
+            cpu: 10m
+            memory: 50Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        securityContext:
+          privileged: true
       containers:
       - env:
           - name: ES_JAVA_OPTS
             value: -Xms512m -Xmx512m
-          - name: discovery.type
-            value: single-node
         image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
         name: elasticsearch
         ports:
@@ -28,43 +42,81 @@ spec:
           protocol: TCP
         - containerPort: 9300
           protocol: TCP
+        livenessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+        readinessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
         volumeMounts:
-          - mountPath: /usr/share/elasticsearch/data
-            name: elasticsearch-data
+          - name: elasticsearch-data
+            mountPath: /usr/share/elasticsearch/data
+          - name: elasticsearch-config
+            mountPath: /usr/share/elasticsearch/elasticsearch.yml
+            readOnly: true
+            subPath: elasticsearch.yml        
       volumes:
       - name: elasticsearch-data
         persistentVolumeClaim:
           claimName: elasticsearch-data
+      - name: elasticsearch-config
+        configMap:
+          name: elasticsearch-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    componet: elasticsearch
+    app: elasticsearch
   name: elasticsearch-data
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi
+      storage: 10Gi
 status: {}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  labels:
+    app: elasticsearch
+data:
+  elasticsearch.yml: |-
+    cluster.name: elasticsearch-cluster
+    network.host: 0.0.0.0
+    discovery.zen.minimum_master_nodes: 1
+    discovery.type: single-node
+---    
 apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch
   labels:
-    component: elasticsearch
+    app: elasticsearch
 spec:
   ports:
   - port: 9200
     targetPort: 9200
     protocol: TCP
-    name: http
+    name: http-1
   - port: 9300
     targetPort: 9300
     protocol: TCP
-    name: http2
+    name: http-2
   selector:
-    component: elasticsearch
+    app: elasticsearch

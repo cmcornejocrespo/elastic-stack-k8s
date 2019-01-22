@@ -29,6 +29,8 @@ spec:
               value: com.atsistemas
             - name: ELASTIC_APM_ENABLE_LOG_CORRELATION
               value: "true"
+            - name: JAVA_OPTS
+              value: "-Xmx512M -Xms512M"
           ports:
             - containerPort: 8082
               name: http

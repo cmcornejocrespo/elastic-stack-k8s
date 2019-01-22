@@ -1,4 +1,33 @@
 ---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: apm-server
+  namespace: default
+  labels:
+    app: apm-server
+spec:
+  template:
+    metadata:
+      labels:
+        app: apm-server
+    spec:
+      containers:
+      - name: apm-server
+        image: docker.elastic.co/apm/apm-server:6.5.4
+        ports:
+        - containerPort: 8200
+          name: apm-port
+        volumeMounts:
+        - name: apm-server-config
+          mountPath: /usr/share/apm-server/apm-server.yml
+          readOnly: true
+          subPath: apm-server.yml
+      volumes:
+      - name: apm-server-config
+        configMap:
+          name: apm-server-config
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -45,36 +74,5 @@ spec:
   - port: 8200
     targetPort: 8200
     name: http
-    nodePort: 31000
   selector:
     app: apm-server
-  type: NodePort
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: apm-server
-spec:
-  # this replicas value is default
-  # modify it according to your case
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: apm-server
-    spec:
-      containers:
-      - name: apm-server
-        image: docker.elastic.co/apm/apm-server:6.5.4
-        ports:
-        - containerPort: 8200
-          name: apm-port
-        volumeMounts:
-        - name: apm-server-config
-          mountPath: /usr/share/apm-server/apm-server.yml
-          readOnly: true
-          subPath: apm-server.yml
-      volumes:
-      - name: apm-server-config
-        configMap:
-          name: apm-server-config
