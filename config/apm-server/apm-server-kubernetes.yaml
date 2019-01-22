@@ -33,17 +33,11 @@ kind: ConfigMap
 metadata:
   name: apm-server-config
   labels:
-    k8s-app: apm-server
+    app: apm-server
 data:
   apm-server.yml: |-
     apm-server:
       host: "0.0.0.0:8200"
-      frontend:
-        enabled: false
-    setup.template.settings:
-      index:
-        number_of_shards: 1
-        codec: best_compression
     setup.dashboards.enabled: true
     setup.kibana:
       host: "http://kibana:5601"
