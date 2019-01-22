@@ -1,3 +1,4 @@
+#agent to generate and expose cluster-level metrics
 ---
 apiVersion: apps/v1beta2
 # Kubernetes versions after 1.9.0 should use apps/v1

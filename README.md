@@ -1,7 +1,7 @@
 # Start Local Kubernetes
 ``` bash
 # mirroring aks k8s version
-minikube start --kubernetes-version v1.11.5 --cpus 2 --memory 4096
+minikube start --kubernetes-version v1.11.5 --cpus 2 --memory 8192
 ```
 
 ## Display active services
@@ -31,6 +31,11 @@ kubectl delete -Rf config/.
 ``` bash
 minikube service kibana
 Opening kubernetes service default/kibana in default browser...
+```
+
+## Watch cluster events
+``` bash
+kubectl get pods --all-namespaces -w
 ```
 
 ## Metricbeats
