@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elasticsearch
+  namespace: pets
   labels:
     app: elasticsearch
 spec:
@@ -91,9 +92,10 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: elasticsearch-data
+  namespace: pets
   labels:
     app: elasticsearch
-  name: elasticsearch-data
 spec:
   accessModes:
     - ReadWriteOnce
@@ -106,6 +108,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: elasticsearch-config
+  namespace: pets
   labels:
     app: elasticsearch
 data:
@@ -119,6 +122,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch
+  namespace: pets
   labels:
     app: elasticsearch
 spec:

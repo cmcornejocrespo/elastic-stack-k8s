@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: apm-server
-  namespace: default
+  namespace: pets
   labels:
     app: apm-server
 spec:
@@ -32,6 +32,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: apm-server-config
+  namespace: pets
   labels:
     app: apm-server
 data:
@@ -61,6 +62,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: apm-server
+  namespace: pets
   labels:
     app: apm-server
 spec:

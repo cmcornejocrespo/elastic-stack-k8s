@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: packetbeat
-  namespace: default
+  namespace: pets
   labels:
     app: packetbeat
 spec:
@@ -61,7 +61,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: packetbeat-config
-  namespace: default
+  namespace: pets
   labels:
     app: packetbeat
 data:
@@ -118,7 +118,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: packetbeat
-  namespace: default
+  namespace: pets
 roleRef:
   kind: ClusterRole
   name: packetbeat
