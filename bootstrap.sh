@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 kubectl create namespace pets
-kubectl create -Rf config/
+kubectl create -Rf k8s-specs/

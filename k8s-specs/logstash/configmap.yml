@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: pets
+  labels:
+    app: logstash-config
+data:
+  logstash.yml: |-
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+    xpack:
+      monitoring:
+      enabled: true
+      elasticsearch.url: http://elasticsearch:9200
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config-pipeline
+  namespace: pets
+  labels:
+    app: logstash-config-pipeline
+data:
+  logstash.conf: |-
+    input {
+      beats {
+          port => 5555
+      }
+    }
+    filter {
+        grok {
+          match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}%{SPACE}\[%{GREEDYDATA:transaction.id},%{SPACE}%{GREEDYDATA:trace.id}\]%{SPACE}%{LOGLEVEL:level}%{SPACE}%{SPACE}%{INT:tenant_id}%{SPACE}-%{SPACE}-%{SPACE}-%{SPACE}\[(?<thread>[^\]]+)\]%{SPACE}%{JAVACLASS:java_class}%{SPACE}:%{GREEDYDATA:log_message}" }
+        }
+        kv {
+          include_keys => [ "transaction.id", "trace.id" ]
+          source => "mdc"
+        }
+        mutate {
+                convert => { "transaction.id" => "string" }
+            }
+        mutate {
+            convert => { "trace.id" => "string" }
+        }
+    }
+    output {
+      elasticsearch {
+          hosts => ["elasticsearch:9200"]
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+      }
+    }
