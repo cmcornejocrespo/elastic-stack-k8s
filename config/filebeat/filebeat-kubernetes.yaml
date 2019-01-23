@@ -13,7 +13,7 @@ spec:
         app: filebeat
     spec:
       serviceAccountName: filebeat
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 60
       containers:
       - name: filebeat
         image: docker.elastic.co/beats/filebeat:6.5.4
@@ -86,6 +86,18 @@ data:
 
     setup.kibana:
       host: "kibana:5601"
+
+    setup:
+      kibana:
+        host: "http://kibana:5601"
+      dashboards:
+        enabled: true
+        index: "filebeat-*"
+        retry:
+          enabled: true
+          interval: 30
+      template:
+        enabled: true
 
     output.logstash:
       hosts: ["logstash:5555"]

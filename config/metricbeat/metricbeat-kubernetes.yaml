@@ -247,6 +247,18 @@ data:
     setup.kibana:
       host: "http://kibana:5601"
 
+    setup:
+      kibana:
+        host: "http://kibana:5601"
+      dashboards:
+        enabled: true
+        index: "metricbeat-*"
+        retry:
+          enabled: true
+          interval: 30
+      template:
+        enabled: true
+
     xpack.monitoring:
       enabled: true
 ---

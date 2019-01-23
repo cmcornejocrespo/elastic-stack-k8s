@@ -105,7 +105,7 @@ data:
         index: "packetbeat-*"
         retry:
           enabled: true
-          interval: 20
+          interval: 30
       template:
         enabled: true
 
