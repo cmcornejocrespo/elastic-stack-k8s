@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: elasticsearch
   namespace: pets
   labels:
     app: elasticsearch
 spec:
+  serviceName: elasticsearch
   replicas: 1
   selector:
     matchLabels:
@@ -15,6 +16,8 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      securityContext:
+        fsGroup: 1000
       initContainers:
       - name: configure-sysctl
         securityContext:
@@ -87,3 +90,15 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: elasticsearch-config
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+        labels:
+          app: elasticsearch
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: managed-premium
+        resources:
+          requests:
+            storage: 20Gi
