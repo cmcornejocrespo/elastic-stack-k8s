@@ -22,9 +22,6 @@ data:
     processors:
       - add_cloud_metadata: ~
 
-    setup.kibana:
-      host: "kibana:5601"
-
     setup:
       kibana:
         host: "http://kibana:5601"
@@ -53,7 +50,7 @@ metadata:
   labels:
     app: filebeat
 data:
-  kubernetes.yml: |-
+  inputs.yml: |-
     - type: docker
       containers.ids:
       - "*"
