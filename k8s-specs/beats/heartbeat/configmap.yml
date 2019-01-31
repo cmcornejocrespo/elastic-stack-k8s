@@ -20,15 +20,16 @@ data:
       hosts:
         - elasticsearch
         - kibana
+        - logstash
 
     processors:
     - add_cloud_metadata:
+    - add_host_metadata:
+        netinfo.enabled: false
+        cache.ttl: 5m
 
     output.elasticsearch:
       hosts: ['http://elasticsearch:9200']
-
-    setup.kibana:
-      host: "http://kibana:5601"
 
     setup:
       kibana:
