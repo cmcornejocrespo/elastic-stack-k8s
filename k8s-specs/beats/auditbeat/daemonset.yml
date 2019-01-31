@@ -14,7 +14,7 @@ spec:
     spec:
       serviceAccountName: auditbeat
       terminationGracePeriodSeconds: 30
-      hostNetwork: true
+      hostPID: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: auditbeat
@@ -29,6 +29,8 @@ spec:
           value: "9200"
         securityContext:
           runAsUser: 0
+          capabilities:
+            add: ["AUDIT_CONTROL", "AUDIT_READ"]
         resources:
           limits:
             memory: 200Mi

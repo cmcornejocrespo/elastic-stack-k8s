@@ -8,14 +8,6 @@ metadata:
     app: auditbeat
 data:
   auditbeat.yml: |-
-    auditbeat.modules:
-      - module: file_integrity
-        paths:
-          - /bin
-          - /usr/bin
-          - /sbin
-          - /usr/sbin
-          - /etc
     auditbeat.config.modules:
       # Mounted `auditbeat-daemonset-modules` configmap:
       path: ${path.config}/modules.d/*.yml
@@ -61,12 +53,23 @@ data:
       - /hostfs/sbin
       - /hostfs/usr/sbin
       - /hostfs/etc
-      exclude_files:
-      - '(?i)\.sw[nop]$'
-      - '~$'
-      - '/\.git($|/)'
-      scan_at_start: true
-      scan_rate_per_sec: 50 MiB
-      max_file_size: 100 MiB
-      hash_types: [sha1]
-      recursive: true
+      - /bin
+      - /usr/bin
+      - /sbin
+      - /usr/sbin
+      - /etc
+
+    - module: system
+      datasets:
+        - host
+        - process
+        - socket
+        - user
+      period: 10s
+      state.period: 12h
+      user.detect_password_changes: true
+
+    - module: auditd
+      audit_rules: |
+        -w /etc/passwd -p wa -k identity
+        -a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
