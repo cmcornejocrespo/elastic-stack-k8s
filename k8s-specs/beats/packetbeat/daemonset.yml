@@ -41,6 +41,10 @@ spec:
           value: "elasticsearch.$(NAMESPACE).svc.cluster.local"
         - name: ELASTICSEARCH_PORT
           value: "9200"
+        - name: KAFKA_HOST
+          value: "kafka.$(NAMESPACE).svc.cluster.local"
+        - name: KAFKA_PORT
+          value: "9092"
         - name: KIBANA_HOST
           value: "kibana.$(NAMESPACE).svc.cluster.local"
         - name: KIBANA_PORT

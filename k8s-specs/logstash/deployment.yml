@@ -30,8 +30,7 @@ spec:
               mountPath: /usr/share/logstash/logstash.yml
               subPath: logstash.yml
             - name: logstash-config-pipeline
-              mountPath: /usr/share/logstash/pipeline/logstash.conf
-              subPath: logstash.conf
+              mountPath: /usr/share/logstash/pipeline
       volumes:
         - name: logstash-config
           configMap:

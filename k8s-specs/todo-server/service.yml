@@ -6,7 +6,6 @@ metadata:
   labels:
     component: todo-server
 spec:
-  type: LoadBalancer
   selector:
     component: todo-server
   ports:

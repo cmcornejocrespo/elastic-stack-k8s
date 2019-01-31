@@ -23,13 +23,17 @@ data:
         - logstash
 
     processors:
-    - add_cloud_metadata:
-    - add_host_metadata:
-        netinfo.enabled: false
-        cache.ttl: 5m
+      - add_cloud_metadata: ~
+      - add_host_metadata: ~
 
-    output.elasticsearch:
-      hosts: ['http://elasticsearch:9200']
+    output.kafka:
+      hosts: ["kafka:9092"]
+      topic: 'heartbeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
 
     setup:
       kibana:
@@ -43,4 +47,7 @@ data:
       template:
         enabled: true
 
-    xpack.monitoring.enabled: true
+    xpack.monitoring:
+      enabled: true
+      elasticsearch:
+        hosts: ["http://elasticsearch:9200"]

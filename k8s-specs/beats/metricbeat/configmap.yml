@@ -17,8 +17,14 @@ data:
     processors:
       - add_cloud_metadata: ~
 
-    output.elasticsearch:
-      hosts: ['elasticsearch:9200']
+    output.kafka:
+      hosts: ["kafka:9092"]
+      topic: 'metricbeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
 
     setup:
       kibana:
@@ -34,6 +40,8 @@ data:
 
     xpack.monitoring:
       enabled: true
+      elasticsearch:
+        hosts: ["http://elasticsearch:9200"]
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -56,6 +64,13 @@ data:
       period: 10s
       host: ${NODE_NAME}
       hosts: ["kube-state-metrics.kube-system.svc.cluster.local:8080"]
+      add_metadata: true
+      in_cluster: true
+    - module: kubernetes
+      enabled: true
+      metricsets:
+        - apiserver
+      hosts: ["https://kubernetes.default:443"]
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -84,14 +99,31 @@ data:
       - add_host_metadata:
           netinfo.enabled: false
 
-    output.elasticsearch:
-      hosts: ['elasticsearch:9200']
+    output.kafka:
+      hosts: ["kafka:9092"]
+      topic: 'metricbeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
 
-    setup.kibana:
-      host: "http://kibana:5601"
+    setup:
+      kibana:
+        host: "http://kibana:5601"
+      dashboards:
+        enabled: true
+        index: "metricbeat-*"
+        retry:
+          enabled: true
+          interval: 30
+      template:
+        enabled: true
 
     xpack.monitoring:
       enabled: true
+      elasticsearch:
+        hosts: ["http://elasticsearch:9200"]
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -111,9 +143,8 @@ data:
         - network
         - process
         - process_summary
-        #- core
-        #- diskio
-        #- socket
+        - core
+        - diskio
       processes: ['.*']
       process.include_top_n:
         by_cpu: 5      # include top 5 processes by CPU
@@ -138,3 +169,51 @@ data:
       period: 10s
       host: ${NODE_NAME}
       hosts: ["localhost:10255"]
+  docker.yml: |-
+    - module: docker
+      metricsets:
+        - "container"
+        - "cpu"
+        - "diskio"
+        - "healthcheck"
+        - "info"
+        - "image"
+        - "memory"
+        - "network"
+      hosts: ["unix:///var/run/docker.sock"]
+      period: 10s
+      enabled: true
+  elastic.yml: |-
+    - module: elasticsearch
+      metricsets:
+        - node
+        - node_stats
+        - index
+        - index_recovery
+        - index_summary
+        - shard
+        - ml_job
+      period: 10s
+      hosts: ["elasticsearch:9200"]
+    - module: logstash
+      metricsets: ["node", "node_stats"]
+      enabled: true
+      period: 10s
+      hosts: ["logstash:9600"]
+    - module: kibana
+      metricsets: ["status"]
+      period: 10s
+      hosts: ["kibana:5601"]
+      basepath: ""
+      enabled: true
+  kafka.yml: |-
+    - module: kafka
+      metricsets: ["consumergroup", "partition"]
+      period: 10s
+      hosts: ["kafka:9092"]
+      enabled: true
+    - module: zookeeper
+      enabled: true
+      metricsets: ["mntr"]
+      period: 10s
+      hosts: ["zookeeper:2181"]

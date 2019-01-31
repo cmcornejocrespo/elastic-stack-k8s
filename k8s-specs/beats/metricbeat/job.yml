@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: pets
+  name: metricbeat-template-init
+spec:
+  template:
+    spec:
+      containers:
+      - name: metricbeat-template-init
+        image: docker.elastic.co/beats/metricbeat:6.6.0
+        command: [ "metricbeat", "setup", "--template",
+          "-E", "output.kafka.enabled=false",
+          "-E", 'output.elasticsearch.hosts=["elasticsearch.pets.svc.cluster.local:9200"]' ]
+      restartPolicy: Never
+  backoffLimit: 50

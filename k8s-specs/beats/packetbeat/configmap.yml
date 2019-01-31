@@ -34,9 +34,14 @@ data:
           - field_format:
               format: '%{[ip]}:%{[port]}'
 
-    output:
-      elasticsearch:
-        hosts: ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+    output.kafka:
+      hosts: ["${KAFKA_HOST}:${KAFKA_PORT}"]
+      topic: 'packetbeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
 
     setup:
       kibana:
@@ -50,4 +55,7 @@ data:
       template:
         enabled: true
 
-    pack.monitoring.enabled: true
+    xpack.monitoring:
+      enabled: true
+      elasticsearch:
+        hosts: ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
