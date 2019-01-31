@@ -7,11 +7,17 @@ metadata:
     app: apm-server
 data:
   apm-server.yml: |-
+
     apm-server:
       host: "0.0.0.0:8200"
+
     setup.dashboards.enabled: true
+
     setup.kibana:
       host: "http://kibana:5601"
+
+    xpack.monitoring.enabled: true
+
     output.elasticsearch:
       hosts: ["http://elasticsearch:9200"]
       indices:

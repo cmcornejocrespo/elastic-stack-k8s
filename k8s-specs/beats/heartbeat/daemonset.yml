@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: heartbeat
-        image: docker.elastic.co/beats/heartbeat:6.5.4
+        image: docker.elastic.co/beats/heartbeat:6.6.0
         args: [
           "-e"
         ]

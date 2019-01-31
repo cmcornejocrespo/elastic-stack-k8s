@@ -18,7 +18,7 @@ spec:
       serviceAccountName: packetbeat
       containers:
       - name: packetbeat
-        image: docker.elastic.co/beats/packetbeat:6.5.4
+        image: docker.elastic.co/beats/packetbeat:6.6.0
         imagePullPolicy: Always
         args: [
           "-e"
