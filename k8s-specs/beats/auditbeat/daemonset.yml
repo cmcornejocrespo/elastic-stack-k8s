@@ -20,13 +20,8 @@ spec:
       - name: auditbeat
         image: docker.elastic.co/beats/auditbeat:6.6.0
         args: [
-          "-c", "/etc/auditbeat.yml"
+          "-e"
         ]
-        env:
-        - name: ELASTICSEARCH_HOST
-          value: elasticsearch
-        - name: ELASTICSEARCH_PORT
-          value: "9200"
         securityContext:
           runAsUser: 0
           capabilities:
@@ -39,7 +34,7 @@ spec:
             memory: 100Mi
         volumeMounts:
         - name: config
-          mountPath: /etc/auditbeat.yml
+          mountPath: /usr/share/auditbeat/auditbeat.yml
           readOnly: true
           subPath: auditbeat.yml
         - name: modules
