@@ -1,3 +1,7 @@
 workspace.code-workspace.idea/
 workspace.code-workspace
 .idea
+terraform/.terraform.tfstate.lock.info
+terraform/terraform.tfstate
+terraform/.terraform/plugins/darwin_amd64/lock.json
+terraform/.terraform/plugins/darwin_amd64/terraform-provider-azurerm_v1.22.0_x4
