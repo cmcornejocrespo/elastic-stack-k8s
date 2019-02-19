@@ -2,6 +2,14 @@ provider "azurerm" {
   version = "=1.22.0"
 }
 
+terraform {
+  backend "azurerm" {
+    storage_account_name  = "tstateakspets16479"
+    container_name        = "tstate-aks-pets"
+    key                   = "terraform.tfstate"
+  }
+}
+
 # Create a resource group
 resource "azurerm_resource_group" "aks-pets-rg" {
   name     = "${var.resource_group_name}"
@@ -21,6 +29,7 @@ resource "azurerm_kubernetes_cluster" "aks-pets" {
     os_disk_size_gb = "${var.os_size}"
   }
 
+  kubernetes_version = "${var.kubernetes_version}"
   service_principal {
     client_id     = "${var.client_id}"
     client_secret = "${var.client_secret}"
