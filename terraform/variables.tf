@@ -15,12 +15,16 @@ variable "node_count" {
 }
 
 variable "vm_size" {
-  default = "Standard_B2s"
-#   Standard_E2s_v3
+  # default = "Standard_B2s"
+  default = "Standard_E2s_v3"
 }
 
 variable "os_size" {
   default = "30"
+}
+
+variable "kubernetes_version" {
+  default = "1.12.5"
 }
 
 variable "client_secret" {}
