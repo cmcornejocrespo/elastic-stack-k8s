@@ -14,9 +14,9 @@ variable "node_count" {
   default = "1"
 }
 
-variable "vm_size" {
+variable "aks_agent_size" {
   # default = "Standard_B2s"
-  default = "Standard_E2s_v3"
+  default = "Standard_B4ms"
 }
 
 variable "os_size" {
@@ -29,6 +29,3 @@ variable "kubernetes_version" {
 
 variable "client_secret" {}
 variable "client_id" {}
-
-
-
