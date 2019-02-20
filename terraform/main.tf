@@ -1,19 +1,12 @@
-provider "azurerm" {
-  version = "=1.22.0"
-}
-
-terraform {
-  backend "azurerm" {
-    storage_account_name  = "tstateakspets16479"
-    container_name        = "tstate-aks-pets"
-    key                   = "terraform.tfstate"
-  }
-}
-
 # Create a resource group
 resource "azurerm_resource_group" "aks-pets-rg" {
   name     = "${var.resource_group_name}"
   location = "${var.location_extended}"
+
+  tags {
+    ProjectId = "ISBN-0067"
+    Description = "ISBAN PETS AKS"
+  }
 }
 
 resource "azurerm_kubernetes_cluster" "aks-pets" {
@@ -25,7 +18,7 @@ resource "azurerm_kubernetes_cluster" "aks-pets" {
   agent_pool_profile {
     name            = "default"
     count           = "${var.node_count}"
-    vm_size         = "${var.vm_size}"
+    vm_size         = "${var.aks_agent_size}"
     os_disk_size_gb = "${var.os_size}"
   }
 
