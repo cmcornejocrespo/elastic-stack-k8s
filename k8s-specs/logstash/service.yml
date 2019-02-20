@@ -6,18 +6,10 @@ metadata:
   labels:
     app: logstash
 spec:
+  type: ClusterIP
   selector:
     app: logstash
   ports:
-    - port: 5000
-      targetPort: 5000
-      protocol: TCP
-      name: http-1
-    - port: 9600
-      targetPort: 9600
-      protocol: TCP
-      name: http-2
     - port: 5555
-      targetPort: 5555
       protocol: TCP
-      name: http-3
+      targetPort: beats

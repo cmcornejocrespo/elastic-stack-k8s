@@ -20,7 +20,10 @@ data:
         reload.enabled: false
 
     processors:
+      - add_host_metadata: ~
       - add_cloud_metadata: ~
+      - add_kubernetes_metadata:
+          in_cluster: true
 
     setup:
       kibana:
@@ -34,8 +37,14 @@ data:
       template:
         enabled: true
 
-    output.logstash:
-      hosts: ["logstash:5555"]
+    output.kafka:
+      hosts: ["kafka:9092"]
+      topic: 'filebeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
 
     xpack.monitoring:
       enabled: true
