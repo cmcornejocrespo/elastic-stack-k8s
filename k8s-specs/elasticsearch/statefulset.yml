@@ -67,12 +67,12 @@ spec:
                     echo 'Elasticsearch is already running, lets check the node is healthy'
                     http "/"
                 else
-                    echo 'Waiting for elasticsearch cluster to become green'
-                    if http "/_cluster/health?wait_for_status=green&timeout=1s" ; then
+                    echo 'Waiting for elasticsearch cluster to become yellow'
+                    if http "/_cluster/health?wait_for_status=yellow&timeout=1s" ; then
                         touch ${START_FILE}
                         exit 0
                     else
-                        echo 'Cluster is not yet green'
+                        echo 'Cluster is not yet yellow'
                         exit 1
                     fi
                 fi
