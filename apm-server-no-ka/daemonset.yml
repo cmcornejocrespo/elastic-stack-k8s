@@ -11,14 +11,6 @@ spec:
       labels:
         app: apm-server
     spec:
-      initContainers:
-        - name: wait-for-elasticsearch
-          image: appropriate/curl
-          imagePullPolicy: IfNotPresent
-          args:
-          - "sh"
-          - "-c"
-          - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.pets.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: apm-server
         image: docker.elastic.co/apm/apm-server:6.6.1

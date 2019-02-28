@@ -24,50 +24,41 @@ data:
   input_main: |-
     input {
       kafka {
+        id => "filebeat"
         bootstrap_servers => "kafka:9092"
         topics => ["filebeat"]
         codec => "json"
-        tags => ["filebeat"]
-        enable_metric => "true"
-        type => "filebeat"
       }
       kafka {
+        id => "packetbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["packetbeat"]
         codec => "json"
-        tags => ["packetbeat"]
-        enable_metric => "true"
-        type => "log"
-        client_id => "packetbeat"
       }
       kafka {
+        id => "auditbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["auditbeat"]
         codec => "json"
-        tags => ["auditbeat"]
-        enable_metric => "true"
-        type => "log"
-        client_id => "auditbeat"
       }
       kafka {
+        id => "heartbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["heartbeat"]
         codec => "json"
-        tags => ["heartbeat"]
-        enable_metric => "true"
-        type => "log"
-        client_id => "heartbeat"
       }
       kafka {
+        id => "metricbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["metricbeat"]
         codec => "json"
-        tags => ["metricbeat"]
-        enable_metric => "true"
-        type => "log"
-        client_id => "metricbeat"
       }
-
+      kafka {
+        id => "apm-server"
+        bootstrap_servers => "kafka:9092"
+        topics_pattern => "apm.*"
+        codec => "json"
+      }
     }
   filter_main: |-
     filter {
@@ -94,8 +85,8 @@ data:
     }
   output_main: |-
     output {
-      elasticsearch {
-        hosts => ["elasticsearch:9200"]
-        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-      }
+        elasticsearch {
+          hosts => ["elasticsearch:9200"]
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        }
     }
