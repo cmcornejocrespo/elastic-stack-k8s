@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-server
+  namespace: pets
+  labels:
+    app: apm-server
+spec:
+  ports:
+  - port: 8200
+    targetPort: 8200
+    name: http
+  selector:
+    app: apm-server

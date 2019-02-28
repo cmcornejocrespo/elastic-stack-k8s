@@ -6,7 +6,15 @@ metadata:
   labels:
     app: kibana-config
 data:
-  elasticsearch.yml: |-
-    server.name: kibana
-    server.host: "0"
-    elasticsearch.url: http://elasticsearch:9200
+  kibana.yml: |-
+    server:
+      name: kibana
+      host: "0"
+    elasticsearch:
+      hosts: http://elasticsearch:9200
+
+    # apm:
+    #   errorIndices: apm-*
+    #   spanIndices: apm-*
+    #   transactionIndices: apm-*
+    #   onboardingIndices: apm-*
