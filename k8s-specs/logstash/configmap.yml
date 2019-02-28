@@ -24,51 +24,40 @@ data:
   input_main: |-
     input {
       kafka {
+        id => "filebeat"
         bootstrap_servers => "kafka:9092"
         topics => ["filebeat"]
         codec => "json"
-        tags => ["filebeat"]
-        type => "filebeat"
       }
       kafka {
+        id => "packetbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["packetbeat"]
         codec => "json"
-        tags => ["packetbeat"]
-        type => "log"
-        client_id => "packetbeat"
       }
       kafka {
+        id => "auditbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["auditbeat"]
         codec => "json"
-        tags => ["auditbeat"]
-        type => "log"
-        client_id => "auditbeat"
       }
       kafka {
+        id => "heartbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["heartbeat"]
         codec => "json"
-        tags => ["heartbeat"]
-        type => "log"
-        client_id => "heartbeat"
       }
       kafka {
+        id => "metricbeat"
         bootstrap_servers => "kafka:9092"
         topics => ["metricbeat"]
         codec => "json"
-        tags => ["metricbeat"]
-        type => "log"
-        client_id => "metricbeat"
       }
       kafka {
+        id => "apm-server"
         bootstrap_servers => "kafka:9092"
         topics_pattern => "apm.*"
         codec => "json"
-        tags => ["apm"]
-        type => "log"
-        client_id => "apm-server"
       }
     }
   filter_main: |-

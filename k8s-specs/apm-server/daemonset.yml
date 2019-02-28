@@ -21,7 +21,7 @@ spec:
           - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.pets.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: apm-server
-        image: docker.elastic.co/apm/apm-server:6.6.0
+        image: docker.elastic.co/apm/apm-server:6.6.1
         ports:
         - containerPort: 8200
           name: apm-port
