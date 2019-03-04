@@ -3,15 +3,23 @@ variable "resource_group_name" {
 }
 
 variable "location" {
-  default = "ukwest"
+  default = "westeurope"
 }
 
 variable "location_extended" {
-  default = "UK West"
+  default = "West Europe"
 }
 
 variable "node_count" {
   default = "1"
+}
+
+variable "oms_enabled" {
+  default = true
+}
+
+variable "aks_rbac_enabled" {
+  default = true
 }
 
 variable "aks_agent_size" {
