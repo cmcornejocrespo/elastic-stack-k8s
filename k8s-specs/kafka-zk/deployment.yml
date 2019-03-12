@@ -1,12 +1,15 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: kafka-controller
+  name: kafka
   namespace: pets
+  labels:
+    app: kafka
 spec:
   replicas: 1
   selector:
-    app: kafka
+    matchLabels:
+      app: kafka
   template:
     metadata:
       labels:
