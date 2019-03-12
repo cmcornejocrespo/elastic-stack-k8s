@@ -15,7 +15,7 @@ data:
       reload.enabled: false
 
     processors:
-      - add_cloud_metadata: ~
+      - add_cloud_metadata: 
 
     output.kafka:
       hosts: ["kafka:9092"]
@@ -95,9 +95,9 @@ data:
          hints.enabled: true
 
     processors:
-      - add_cloud_metadata: ~
+      - add_cloud_metadata:
       - add_host_metadata:
-          netinfo.enabled: false
+          netinfo.enabled: true
 
     output.kafka:
       hosts: ["kafka:9092"]
