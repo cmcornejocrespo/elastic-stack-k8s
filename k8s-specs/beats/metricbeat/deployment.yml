@@ -3,7 +3,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: metricbeat
-  namespace: pets
+  namespace: elastic
   labels:
     app: metricbeat
 spec:

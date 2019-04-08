@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: apm-server
-  namespace: pets
+  namespace: elastic
   labels:
     app: apm-server
 spec:

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-client
-  namespace: pets
+  namespace: elastic
   labels:
     componet: todo-client
 spec:

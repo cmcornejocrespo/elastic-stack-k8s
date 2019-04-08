@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: auditbeat
-  namespace: pets
+  namespace: elastic
   labels:
     app: auditbeat
 spec:

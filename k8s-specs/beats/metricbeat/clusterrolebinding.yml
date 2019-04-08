@@ -5,7 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: metricbeat
-  namespace: pets
+  namespace: elastic
 roleRef:
   kind: ClusterRole
   name: metricbeat

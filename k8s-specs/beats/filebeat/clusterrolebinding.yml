@@ -5,7 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: filebeat
-  namespace: pets
+  namespace: elastic
 roleRef:
   kind: ClusterRole
   name: filebeat

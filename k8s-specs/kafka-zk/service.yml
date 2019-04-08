@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeeper
-  namespace: pets
+  namespace: elastic
   labels:
     app: kafka
 spec:
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kafka
-  namespace: pets
+  namespace: elastic
   labels:
     app: kafka
 spec:

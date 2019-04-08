@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: packetbeat-config
-  namespace: pets
+  namespace: elastic
   labels:
     app: packetbeat
 data:

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: heartbeat-config
-  namespace: pets
+  namespace: elastic
   labels:
     app: heartbeat
 data:

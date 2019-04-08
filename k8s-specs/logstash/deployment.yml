@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: logstash
-  namespace: pets
+  namespace: elastic
   labels:
     app: logstash
 spec:

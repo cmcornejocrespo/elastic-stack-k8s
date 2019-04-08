@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  namespace: pets
+  namespace: elastic
   name: metricbeat-template-init-job
 spec:
   template:
@@ -12,14 +12,14 @@ spec:
         args:
         - "sh"
         - "-c"
-        - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.pets.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
+        - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.elastic.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: create-metricbeat-template
         image: docker.elastic.co/beats/metricbeat:6.6.1
         command: [ "metricbeat", "setup", "--template",
           "-E", "output.kafka.enabled=false",
-          "-E", 'output.elasticsearch.hosts=["elasticsearch.pets.svc.cluster.local:9200"]' ]
+          "-E", 'output.elasticsearch.hosts=["elasticsearch.elastic.svc.cluster.local:9200"]' ]
       - name: force-kibana-new-documents
         image: "appropriate/curl"
-        command: ["curl", "-XDELETE", "elasticsearch.pets.svc.cluster.local:9200/metricbeat-*"]
+        command: ["curl", "-XDELETE", "elasticsearch.elastic.svc.cluster.local:9200/metricbeat-*"]
       restartPolicy: Never

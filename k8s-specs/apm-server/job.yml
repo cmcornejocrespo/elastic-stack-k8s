@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  namespace: pets
+  namespace: elastic
   name: apm-template-init-job
 spec:
   template:
@@ -13,7 +13,7 @@ spec:
         args:
         - "sh"
         - "-c"
-        - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.pets.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
+        - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.elastic.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: create-apm-template
         image: docker.elastic.co/apm/apm-server:6.6.1
@@ -21,9 +21,9 @@ spec:
           "-E", "output.kafka.enabled=false",
           "-E", 'setup.template.name="apm-server"',
           "-E", 'setup.template.pattern="apm-server-*"',
-          "-E", 'output.elasticsearch.hosts=["elasticsearch.pets.svc.cluster.local:9200"]']
+          "-E", 'output.elasticsearch.hosts=["elasticsearch.elastic.svc.cluster.local:9200"]']
       - name: force-kibana-new-documents
         image: "appropriate/curl"
         imagePullPolicy: IfNotPresent
-        command: ["curl", "-XDELETE", "elasticsearch.pets.svc.cluster.local:9200/apm-server-*"]
+        command: ["curl", "-XDELETE", "elasticsearch.elastic.svc.cluster.local:9200/apm-server-*"]
       restartPolicy: Never

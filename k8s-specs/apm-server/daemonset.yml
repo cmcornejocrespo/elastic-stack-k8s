@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: apm-server
-  namespace: pets
+  namespace: elastic
   labels:
     app: apm-server
 spec:
@@ -18,7 +18,7 @@ spec:
           args:
           - "sh"
           - "-c"
-          - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.pets.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
+          - "while [ $(curl -sw '%{http_code}' 'http://elasticsearch.elastic.svc.cluster.local:9200/_cluster/health?pretty' -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: apm-server
         image: docker.elastic.co/apm/apm-server:6.6.1

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: auditbeat-config
-  namespace: pets
+  namespace: elastic
   labels:
     app: auditbeat
 data:
@@ -47,7 +47,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: auditbeat-daemonset-modules
-  namespace: pets
+  namespace: elastic
   labels:
     app: auditbeat
 data:
