@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default = "aks-pets"
+  default = "elastic-aks"
 }
 
 variable "location" {
@@ -32,7 +32,7 @@ variable "os_size" {
 }
 
 variable "kubernetes_version" {
-  default = "1.12.5"
+  default = "1.12.7"
 }
 
 variable "client_secret" {}

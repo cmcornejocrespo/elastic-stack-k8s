@@ -1,7 +1,7 @@
 # Start Local Kubernetes
 ``` bash
 # mirroring aks k8s version
-minikube start --kubernetes-version v1.12.5 --cpus 2 --memory 8192
+minikube start --kubernetes-version v1.12.7 --cpus 2 --memory 8192
 ```
 
 ## Display active services
@@ -32,7 +32,7 @@ minikube service kibana
 Opening kubernetes service default/kibana in default browser...
 ```
 
-## Watch pets events
+## Watch elastic events
 ``` bash
 kubectl
 ```

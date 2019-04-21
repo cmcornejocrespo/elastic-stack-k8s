@@ -3,38 +3,11 @@ resource "azurerm_resource_group" "rg" {
   location = "${var.location_extended}"
 
   tags {
-    projectid   = "ISBN-0067"
-    description = "ISBAN PETS AKS"
+    description = "elastic demo aks rg"
   }
 }
 
-resource "azurerm_log_analytics_workspace" "law" {
-  name                = "${var.resource_group_name}-law-${random_id.workspace.hex}"
-  location            = "${azurerm_resource_group.rg.location}"
-  resource_group_name = "${azurerm_resource_group.rg.name}"
-  sku                 = "PerGB2018"
-
-  tags {
-    projectid   = "ISBN-0067"
-    description = "ISBAN PETS AKS"
-  }
-}
-
-resource "azurerm_log_analytics_solution" "las" {
-  solution_name         = "ContainerInsights"
-  location              = "${azurerm_resource_group.rg.location}"
-  resource_group_name   = "${azurerm_resource_group.rg.name}"
-  workspace_resource_id = "${azurerm_log_analytics_workspace.law.id}"
-  workspace_name        = "${azurerm_log_analytics_workspace.law.name}"
-
-  plan {
-    publisher = "Microsoft"
-    product   = "OMSGallery/ContainerInsights"
-  }
-
-}
-
-resource "azurerm_kubernetes_cluster" "aks-pets" {
+resource "azurerm_kubernetes_cluster" "elastic-aks" {
   location            = "${var.location}"
   name                = "${azurerm_resource_group.rg.name}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
@@ -58,24 +31,7 @@ resource "azurerm_kubernetes_cluster" "aks-pets" {
     enabled = "${var.aks_rbac_enabled}"
   }
 
-  addon_profile {
-    oms_agent {
-      enabled                    = "${var.oms_enabled}"
-      log_analytics_workspace_id = "${azurerm_log_analytics_workspace.law.id}"
-    }
-  }
-
   tags {
-    projectid   = "ISBN-0067"
-    description = "ISBAN PETS AKS"
+    description = "elastic demo aks cluster"
   }
-}
-
-resource "random_id" "workspace" {
-  keepers = {
-    # Generate a new id each time we switch to a new resource group
-    group_name = "${azurerm_resource_group.rg.name}"
-  }
-
-  byte_length = 8
 }

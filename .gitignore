@@ -4,3 +4,4 @@ workspace.code-workspace
 terraform/.terraform
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
+terraform/elastic-aks.tfplan

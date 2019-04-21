@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: elastic
+  labels:
+    app: zookeeper
+spec:
+  type: ClusterIP
+  ports:
+  - name: client
+    port: 2181
+    targetPort: client
+  - name: follower
+    port: 2888
+    targetPort: follower
+  - name: election
+    port: 3888
+    targetPort: election
+  selector:
+    app: zookeeper

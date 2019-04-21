@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-client
+  namespace: elastic
+  labels:
+    app: todo-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-client
+  template:
+    metadata:
+      labels:
+        app: todo-client
+    spec:
+      initContainers:
+        - name: wait-for-apm-server
+          image: appropriate/curl
+          resources:
+            limits:
+              cpu: 150m
+              memory: 50Mi
+            requests:
+              cpu: 150m
+              memory: 50Mi
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          args:
+          - "sh"
+          - "-c"
+          - "while [ $(curl -sw %{http_code} http://apm-server.${NAMESPACE}.svc.cluster.local:8200/ -o /dev/null) -ne 200 ]; do sleep 15; done"
+      containers:
+        - name: todo-client
+          image: atsistemas/todo-client
+          env:
+            - name: TODO_SERVER_URL
+              value: http://todo-server:8081
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: todo-client
+            - name: ELASTIC_APM_SERVER_URLS
+              value: http://apm-server:8200
+            - name: ELASTIC_APM_APPLICATION_PACKAGES
+              value: com.atsistemas
+            - name: ELASTIC_APM_ENABLE_LOG_CORRELATION
+              value: "true"
+            - name: JAVA_OPTS
+              value: "-Xmx512M -Xms512M"
+          ports:
+            - containerPort: 8082
+              name: http
+              protocol: TCP

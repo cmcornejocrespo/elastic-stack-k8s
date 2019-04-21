@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-client
+  namespace: elastic
+  labels:
+    app: todo-client
+spec:
+  type: LoadBalancer
+  selector:
+    app: todo-client
+  ports:
+    - name: http
+      port: 8082
+      protocol: TCP

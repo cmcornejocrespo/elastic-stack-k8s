@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: packetbeat-config
+  namespace: elastic
+  labels:
+    app: packetbeat
+data:
+  packetbeat.yml: |-
+    
+    packetbeat.interfaces.device: any
+
+    packetbeat.protocols:
+    - type: dns
+      ports: [53]
+      include_authorities: true
+      include_additionals: true
+
+    - type: http
+      ports: [9200, 9300, 9600, 5000, 5555, 5601, 8200, 8081, 8082]
+      hide_keywords: ["pass", "password", "passwd"]
+      send_headers: ["User-Agent", "Cookie", "Set-Cookie"]
+      split_cookie: true
+      real_ip_header: "X-Forwarded-For"
+
+    processors:
+      - add_cloud_metadata: ~
+      - add_host_metadata: ~
+      - add_kubernetes_metadata:
+          host: ${NODE_NAME}
+          indexers:
+          - ip_port:
+          matchers:
+          - field_format:
+              format: '%{[ip]}:%{[port]}'
+
+    output.kafka:
+      hosts: ["${KAFKA_HOST}:${KAFKA_PORT}"]
+      topic: 'packetbeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
+
+    setup:
+      kibana:
+        host: "${KIBANA_HOST}:${KIBANA_PORT}"
+      dashboards:
+        enabled: true
+        index: "packetbeat-*"
+        retry:
+          enabled: true
+          interval: 30
+      template:
+        enabled: true
+
+    xpack.monitoring:
+      enabled: true
+      elasticsearch:
+        hosts: ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
