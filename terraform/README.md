@@ -18,8 +18,8 @@ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 # Create Role Contributor (appId==client_id, password==your_client_secret)
 az ad sp create-for-rbac --name elastic-aks --role="Contributor" --scopes="/subscriptions/<YOUR_SUBSCRIPTION_ID>"
 
-# init (requires export ACCOUNT_KEY)
-terraform init -var "client_id=your_client_id" -var "client_secret=your_client_secret"
+# init
+terraform init
 
 # plan
 terraform plan -var "client_id=your_client_id" -var "client_secret=your_client_secret" -out=elastic-aks.tfplan

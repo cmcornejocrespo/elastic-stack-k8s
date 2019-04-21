@@ -1,0 +1,102 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: elastic
+  labels:
+    app: logstash-config
+data:
+  logstash.yml: |-
+    
+    http.host: "0.0.0.0"
+    config.reload.automatic: true
+    path.data: /usr/share/logstash/data
+    queue:
+      type: persisted
+      max_bytes: 1gb
+      drain: true
+      checkpoint:
+        writes: 1
+    xpack:
+      monitoring:
+        enabled: true
+        elasticsearch.hosts: http://elasticsearch:9200
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config-pipeline
+  namespace: elastic
+  labels:
+    app: logstash
+data:
+  input_main: |-
+    input {
+      kafka {
+        id => "filebeat"
+        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+        topics => ["filebeat"]
+        codec => "json"
+      }
+      kafka {
+        id => "packetbeat"
+        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+        topics => ["packetbeat"]
+        codec => "json"
+      }
+      kafka {
+        id => "auditbeat"
+        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+        topics => ["auditbeat"]
+        codec => "json"
+      }
+      kafka {
+        id => "heartbeat"
+        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+        topics => ["heartbeat"]
+        codec => "json"
+      }
+      kafka {
+        id => "metricbeat"
+        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+        topics => ["metricbeat"]
+        codec => "json"
+      }
+      kafka {
+        id => "apm-server"
+        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+        topics_pattern => "apm.*"
+        codec => "json"
+      }
+    }
+  filter_main: |-
+    filter {
+
+      if [topics] == "filebeat" {
+
+          grok {
+              match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}%{SPACE}\[%{GREEDYDATA:transaction.id},%{SPACE}%{GREEDYDATA:trace.id}\]%{SPACE}%{LOGLEVEL:level}%{SPACE}%{SPACE}%{INT:tenant_id}%{SPACE}-%{SPACE}-%{SPACE}-%{SPACE}\[(?<thread>[^\]]+)\]%{SPACE}%{JAVACLASS:java_class}%{SPACE}:%{GREEDYDATA:log_message}" }
+          }
+
+          kv {
+              include_keys => [ "transaction.id", "trace.id" ]
+              source => "mdc"
+          }
+
+          mutate {
+              convert => { "transaction.id" => "string" }
+          }
+          mutate {
+              convert => { "trace.id" => "string" }
+          }
+      }
+
+    }
+  output_main: |-
+    output {
+        elasticsearch {
+          hosts => ["elasticsearch:9200"]
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        }
+    }
