@@ -37,6 +37,13 @@ spec:
       containers:
         - name: todo-server
           image: atsistemas/todo-repo
+          resources:
+            limits:
+              cpu: 1
+              memory: 1536Mi
+            requests:
+              cpu: "0.5"
+              memory: 1024Mi
           env:
             - name: ELASTIC_APM_SERVICE_NAME
               value: todo-server
@@ -47,7 +54,7 @@ spec:
             - name: ELASTIC_APM_ENABLE_LOG_CORRELATION
               value: "true"
             - name: JAVA_OPTS
-              value: "-Xmx512M -Xms512M"
+              value: "-Xmx1024M -Xms1024M"
           ports:
             - containerPort: 8081
               name: http

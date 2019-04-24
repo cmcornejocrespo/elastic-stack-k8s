@@ -37,6 +37,13 @@ spec:
       containers:
         - name: todo-client
           image: atsistemas/todo-client
+          resources:
+            limits:
+              cpu: 1
+              memory: 1024Mi
+            requests:
+              cpu: "0.5"
+              memory: 512Mi
           env:
             - name: TODO_SERVER_URL
               value: http://todo-server:8081
