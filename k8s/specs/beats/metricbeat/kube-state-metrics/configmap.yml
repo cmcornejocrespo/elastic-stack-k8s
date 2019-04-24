@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-deployment-config
+  namespace: elastic
+  labels:
+    app: metricbeat
+data:
+  metricbeat.yml: |-
+    metricbeat.config.modules:
+      # Mounted `metricbeat-daemonset-modules` configmap:
+      path: ${path.config}/modules.d/*.yml
+      # Reload module configs as they change:
+      reload.enabled: false
+
+    processors:
+      - add_cloud_metadata: 
+
+    output.kafka:
+      hosts: ["kafka-0.kafka-headless.elastic:9092"]
+      topic: 'metricbeat'
+      partition.round_robin:
+        reachable_only: false
+      required_acks: 1
+      compression: gzip
+      max_message_bytes: 1000000
+
+    setup:
+      kibana:
+        host: "http://kibana:5601"
+      dashboards:
+        enabled: true
+
+    xpack.monitoring:
+      enabled: true
+      elasticsearch:
+        hosts: ["http://elasticsearch:9200"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-deployment-modules
+  namespace: elastic
+  labels:
+    app: metricbeat
+data:
+  # This module requires `kube-state-metrics` up and running under `kube-system` namespace
+  kubernetes.yml: |-
+    - module: kubernetes
+      metricsets:
+        - state_node
+        - state_deployment
+        - state_replicaset
+        - state_statefulset
+        - state_pod
+        - state_container
+      period: 10s
+      host: ${NODE_NAME}
+      hosts: ["kube-state-metrics.kube-system.svc.cluster.local:8080"]
+      add_metadata: true
+      in_cluster: true
+    - module: kubernetes
+      enabled: true
+      metricsets:
+        - apiserver
+      hosts: ["https://kubernetes.default:443"]
