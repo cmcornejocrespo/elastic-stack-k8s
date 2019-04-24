@@ -16,12 +16,9 @@ data:
         host: "http://kibana:5601"
       dashboards:
         enabled: true
-        # index: "apm-server-*"
-      template:
-        enabled: false
     
     xpack.monitoring:
-      enabled: false
+      enabled: true
       elasticsearch:
         hosts: ["http://elasticsearch:9200"]
 
