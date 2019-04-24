@@ -33,12 +33,6 @@ data:
         host: "http://kibana:5601"
       dashboards:
         enabled: true
-        index: "heartbeat-*"
-        retry:
-          enabled: true
-          interval: 30
-      template:
-        enabled: true
 
     xpack.monitoring:
       enabled: true
