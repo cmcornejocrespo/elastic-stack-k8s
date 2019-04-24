@@ -12,9 +12,3 @@ data:
       host: "0"
     elasticsearch:
       hosts: http://elasticsearch:9200
-
-    # apm:
-    #   errorIndices: apm-*
-    #   spanIndices: apm-*
-    #   transactionIndices: apm-*
-    #   onboardingIndices: apm-*
