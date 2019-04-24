@@ -68,7 +68,7 @@ spec:
         - name: ELASTICSEARCH_PORT
           value: "9200"
         - name: KAFKA_HOST
-          value: "kafka.$(NAMESPACE).svc.cluster.local"
+          value: "kafka-0.kafka-headless.$(NAMESPACE)"
         - name: KAFKA_PORT
           value: "9092"
         - name: KIBANA_HOST
