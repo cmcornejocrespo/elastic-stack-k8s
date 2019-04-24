@@ -1,6 +1,8 @@
 # aks terraform provisioner
 
-# Deploy cluster
+Provisions a Managed Kubernetes Cluster in AKS via Terraform
+
+## Setup (requires az CLI)
 
 ``` bash
 #prompt login
@@ -29,18 +31,12 @@ terraform apply elastic-aks.tfplan
 ```
 
 # Setup Kubernetes dashboard
+
 ``` bash
 az aks get-credentials --resource-group elastic-aks --name elastic-aks --overwrite-existing
 
 # rbac users
 kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin  --serviceaccount=kube-system:kubernetes-dashboard
-
-``` 
-# Connect
-
-``` bash
-# get creds
-az aks get-credentials --resource-group elastic-aks --name elastic-aks --overwrite-existing
 
 # open dashboard
 az aks browse --resource-group elastic-aks --name elastic-aks
