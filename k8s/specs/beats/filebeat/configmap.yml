@@ -24,12 +24,6 @@ data:
         host: "http://kibana:5601"
       dashboards:
         enabled: true
-        index: "filebeat-*"
-        retry:
-          enabled: true
-          interval: 30
-      template:
-        enabled: true
 
     queue.mem:
       events: 4096
@@ -48,23 +42,6 @@ data:
       enabled: true
       elasticsearch:
         hosts: ["http://elasticsearch:9200"]
-
-    # filebeat.autodiscover:
-    #   providers:
-    #     - type: docker
-    #       templates:
-    #       - condition:
-    #           contains:
-    #             docker.container.labels.org.label-schema.name: "kafka"
-    #         config:
-    #           - module: kafka
-    #             log:
-    #               enabled: true
-    #               var:
-    #                 input:
-    #                   type: docker
-    #                   containers.ids:
-    #                     - "${data.docker.container.id}"
 
     filebeat.autodiscover:
       providers:
@@ -108,40 +85,3 @@ data:
             - "kubernetes.labels.app"
             - "source"
             - "host.name"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: filebeat-inputs-config
-  namespace: elastic
-  labels:
-    app: filebeat
-data:
-  inputs.yml: |-
-    # - type: docker
-    #   containers.ids:
-    #   - "*"
-    #   processors:
-    #   - add_host_metadata: ~
-    #   - add_cloud_metadata: ~
-    #   - add_docker_metadata: ~
-    #   - add_kubernetes_metadata:
-    #       in_cluster: true
-    #   - drop_event:
-    #       when:
-    #         equals:
-    #           kubernetes.container.name: "filebeat"
-    #   - drop_event:
-    #       when:
-    #         equals:
-    #           kubernetes.container.name: "heapster-nanny"
-    #   - drop_event:
-    #       when:
-    #         equals:
-    #           kubernetes.container.name: "redirector"
-    #   - drop_event:
-    #       when:
-    #         equals:
-    #           kubernetes.container.name: "tunnel-front"
-    #   - drop_fields:
-    #       fields: ["beat.hostname", "beat.name", "beat.version"]
