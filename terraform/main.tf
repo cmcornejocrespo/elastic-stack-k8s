@@ -32,6 +32,6 @@ resource "azurerm_kubernetes_cluster" "elastic-aks" {
   }
 
   tags {
-    description = "elastic demo aks cluster"
+    description = "elastic meetup BCN - elastic demo aks cluster"
   }
 }
