@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: "zookeeper"
+  name: zookeeper
   namespace: elastic
   labels:
     app: zookeeper
@@ -16,7 +16,7 @@ spec:
       app: zookeeper
   template:
     metadata:
-      name: "zookeeper"
+      name: zookeeper
       labels:
         app: zookeeper
     spec:
@@ -47,6 +47,10 @@ spec:
             nami_initialize zookeeper
             exec tini -- /run.sh
         env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         - name: ZOO_PORT_NUMBER
           value: "2181"
         - name: ZOO_TICK_TIME
@@ -58,7 +62,7 @@ spec:
         - name: ZOO_MAX_CLIENT_CNXNS
           value: "60"
         - name: ZOO_SERVERS
-          value: zookeeper-0.zookeeper-headless.elastic.svc.cluster.local:2888:3888 
+          value: '$(POD_NAME).zookeeper-headless.elastic.svc.cluster.local:2888:3888'
         - name: ZOO_HEAP_SIZE
           value: "1024"
         - name: ALLOW_ANONYMOUS_LOGIN

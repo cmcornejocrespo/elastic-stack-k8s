@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: "kafka"
+  name: kafka
   namespace: elastic
   labels:
     app: kafka
@@ -16,7 +16,7 @@ spec:
     type: "RollingUpdate"
   template:
     metadata:
-      name: "kafka"
+      name: kafka
       labels:
         app: kafka
     spec:      
@@ -39,7 +39,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: KAFKA_ZOOKEEPER_CONNECT
-          value: zookeeper
+          value: zookeeper-0.zookeeper-headless.elastic.svc.cluster.local
         - name: KAFKA_PORT_NUMBER
           value: "9092"
         - name: KAFKA_LISTENERS
