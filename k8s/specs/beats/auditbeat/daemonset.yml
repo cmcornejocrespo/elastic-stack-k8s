@@ -24,8 +24,8 @@ spec:
               cpu: 100m
               memory: 100Mi
             requests:
-              cpu: 50m
-              memory: 50Mi
+              cpu: 100m
+              memory: 10Mi
           env:
             - name: NAMESPACE
               valueFrom:
@@ -47,11 +47,11 @@ spec:
             add: ["AUDIT_CONTROL", "AUDIT_READ"]
         resources: 
           limits:
-            cpu: 60m
+            cpu: 100m
             memory: 60Mi
           requests:
-            cpu: 30m
-            memory: 30Mi
+            cpu: 100m
+            memory: 60Mi
         volumeMounts:
         - name: config
           mountPath: /usr/share/auditbeat/auditbeat.yml
