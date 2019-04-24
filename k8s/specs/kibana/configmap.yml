@@ -7,8 +7,4 @@ metadata:
     app: kibana-config
 data:
   kibana.yml: |-
-    server:
-      name: kibana
-      host: "0"
-    elasticsearch:
-      hosts: http://elasticsearch:9200
+    elasticsearch.hosts: http://elasticsearch:9200
