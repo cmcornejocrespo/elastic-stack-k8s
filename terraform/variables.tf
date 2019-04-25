@@ -32,7 +32,7 @@ variable "os_size" {
 }
 
 variable "kubernetes_version" {
-  default = "1.12.7"
+  default = "1.13.5"
 }
 
 variable "client_secret" {}
