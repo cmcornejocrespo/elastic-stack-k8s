@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+kubectl apply -Rf k8s/specs/
+sleep 30
+helm init --service-account tiller
