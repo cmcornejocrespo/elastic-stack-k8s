@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "rg" {
   location = "${var.location_extended}"
 
   tags {
-    description = "elastic demo aks rg"
+    description = "elastic meetup BCN - elastic demo aks rg"
   }
 }
 
