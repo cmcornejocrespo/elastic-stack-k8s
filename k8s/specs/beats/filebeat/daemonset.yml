@@ -34,7 +34,7 @@ spec:
           - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:6.7.1
+        image: docker.elastic.co/beats/filebeat:6.8.0
         args: [
           "-e"
         ]

@@ -32,7 +32,7 @@ spec:
           - "while [ $(curl -sw %{http_code} http://kibana.${NAMESPACE}.svc.cluster.local:5601/api/status -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: apm-server
-        image: docker.elastic.co/apm/apm-server:6.7.1
+        image: docker.elastic.co/apm/apm-server:6.8.0
         resources:
           limits:
             cpu: 100m

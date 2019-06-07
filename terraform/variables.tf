@@ -3,11 +3,11 @@ variable "resource_group_name" {
 }
 
 variable "location" {
-  default = "westeurope"
+  default = "northeurope"
 }
 
 variable "location_extended" {
-  default = "West Europe"
+  default = "North Europe"
 }
 
 variable "node_count" {
@@ -32,7 +32,7 @@ variable "os_size" {
 }
 
 variable "kubernetes_version" {
-  default = "1.13.5"
+  default = "1.14.0"
 }
 
 variable "client_secret" {}

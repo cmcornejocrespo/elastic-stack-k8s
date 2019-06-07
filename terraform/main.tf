@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "rg" {
   location = "${var.location_extended}"
 
   tags {
-    description = "elastic meetup BCN - elastic demo aks rg"
+    description = "elastic demo aks rg"
   }
 }
 
@@ -32,6 +32,6 @@ resource "azurerm_kubernetes_cluster" "elastic-aks" {
   }
 
   tags {
-    description = "elastic meetup BCN - elastic demo aks cluster"
+    description = "elastic demo aks cluster"
   }
 }
