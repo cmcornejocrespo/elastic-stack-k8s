@@ -2,6 +2,10 @@
 
 Provisions a Managed Kubernetes Cluster in AKS via Terraform
 
+## Requirements
+- Terraform v0.13.1
+- hashicorp/azurerm version 2.26.0
+
 ## Setup (requires az CLI)
 
 ``` bash
@@ -24,7 +28,7 @@ az ad sp create-for-rbac --name elastic-aks --role="Contributor" --scopes="/subs
 terraform init
 
 # plan
-terraform plan -var "client_id=your_client_id" -var "client_secret=your_client_secret" -out=elastic-aks.tfplan
+terraform plan -var "client_id=appId" -var "client_secret=secret" -out=elastic-aks.tfplan
 
 # apply (this will create the cluster!!)
 terraform apply elastic-aks.tfplan
