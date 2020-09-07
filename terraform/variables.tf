@@ -31,9 +31,5 @@ variable "os_size" {
   default = "30"
 }
 
-variable "kubernetes_version" {
-  default = "1.14.0"
-}
-
 variable "client_secret" {}
 variable "client_id" {}

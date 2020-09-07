@@ -20,8 +20,6 @@ resource "azurerm_kubernetes_cluster" "elastic-aks" {
     os_disk_size_gb = var.os_size
   }
 
-  kubernetes_version = var.kubernetes_version
-
   addon_profile {
 
     azure_policy {
