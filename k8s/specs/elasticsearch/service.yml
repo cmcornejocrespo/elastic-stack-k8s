@@ -1,19 +1,17 @@
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  name: elasticsearch
-  namespace: elastic
+  name: elasticsearch-master
   labels:
-    app: elasticsearch
+    app: "elasticsearch-master"
 spec:
-  ports:
-  - port: 9200
-    targetPort: 9200
-    protocol: TCP
-    name: http-1
-  - port: 9300
-    targetPort: 9300
-    protocol: TCP
-    name: http-2
+  type: ClusterIP
   selector:
-    app: elasticsearch
+    app: "elasticsearch-master"
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9200
+  - name: transport
+    protocol: TCP
+    port: 9300
