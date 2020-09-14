@@ -22,7 +22,7 @@ data:
     xpack.monitoring:
       enabled: true
       elasticsearch:
-        hosts: ["http://elasticsearch:9200"]
+        hosts: ["http://elasticsearch-master:9200"]
 
     output.kafka:
       hosts: ["kafka-0.kafka-headless.elastic:9092"]

@@ -7,5 +7,7 @@ metadata:
     app: kibana-config
 data:
   kibana.yml: |-
-    elasticsearch:
-      hosts: http://elasticsearch:9200
+    # elasticsearch:
+    #   hosts: http://elasticsearch-master:9200
+    
+    monitoring.ui.container.elasticsearch.enabled: true

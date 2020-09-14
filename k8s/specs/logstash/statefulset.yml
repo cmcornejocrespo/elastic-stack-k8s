@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: logstash
@@ -22,13 +22,7 @@ spec:
       initContainers:
         - name: wait-for-elasticsearch
           image: appropriate/curl
-          resources:
-            limits:
-              cpu: 150m
-              memory: 50Mi
-            requests:
-              cpu: 150m
-              memory: 50Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -37,10 +31,12 @@ spec:
           args:
           - "sh"
           - "-c"
-          - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
+          - "while [ $(curl -sw %{http_code} http://elasticsearch-master.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
         - name: logstash
-          image: docker.elastic.co/logstash/logstash:6.8.0
+          image: docker.elastic.co/logstash/logstash:7.9.1
+          args:
+          - "--debug"
           imagePullPolicy: IfNotPresent
           ports:
             - name: monitor
@@ -60,7 +56,15 @@ spec:
               port: monitor
             initialDelaySeconds: 20
           resources:
-            {}
+            limits:
+              cpu: 1000m
+              memory: 1536Mi
+            requests:
+              cpu: 100m
+              memory: 1536Mi
+          env:
+            - name: LS_JAVA_OPTS
+              value: "-Xmx1g -Xms1g"
           volumeMounts:
             - mountPath: /usr/share/logstash/data
               name: data
@@ -86,4 +90,4 @@ spec:
         storageClassName: premium-expansion-enabled
         resources:
           requests:
-            storage: "10Gi"
+            storage: "50Gi"

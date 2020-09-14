@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: filebeat
@@ -6,6 +6,9 @@ metadata:
   labels:
     app: filebeat
 spec:
+  selector:
+    matchLabels:
+      app: filebeat
   template:
     metadata:
       labels:
@@ -16,13 +19,7 @@ spec:
       initContainers:
         - name: wait-for-elasticsearch
           image: appropriate/curl
-          resources: 
-            limits:
-              cpu: 40m
-              memory: 80Mi
-            requests:
-              cpu: 20m
-              memory: 40Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -31,10 +28,10 @@ spec:
           args:
           - "sh"
           - "-c"
-          - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
+          - "while [ $(curl -sw %{http_code} http://elasticsearch-master.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:6.8.0
+        image: docker.elastic.co/beats/filebeat:7.9.1
         args: [
           "-e"
         ]
@@ -47,9 +44,10 @@ spec:
           runAsUser: 0
         resources:
           limits:
+            cpu: 100m
             memory: 200Mi
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 100Mi
         volumeMounts:
         - name: config

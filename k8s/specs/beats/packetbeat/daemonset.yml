@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: packetbeat
@@ -6,6 +6,9 @@ metadata:
   labels:
     app: packetbeat
 spec:
+  selector:
+    matchLabels:
+      app: packetbeat
   template:
     metadata:
       labels:
@@ -19,13 +22,7 @@ spec:
       initContainers:
         - name: wait-for-elasticsearch
           image: appropriate/curl
-          resources:
-            limits:
-              cpu: 150m
-              memory: 50Mi
-            requests:
-              cpu: 150m
-              memory: 50Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -34,10 +31,10 @@ spec:
           args:
           - "sh"
           - "-c"
-          - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
+          - "while [ $(curl -sw %{http_code} http://elasticsearch-master.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: packetbeat
-        image: docker.elastic.co/beats/packetbeat:6.8.0
+        image: docker.elastic.co/beats/packetbeat:7.9.1
         imagePullPolicy: Always
         args: [
           "-e"
@@ -47,7 +44,7 @@ spec:
             memory: 200Mi
             cpu: 100m
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 100Mi
         securityContext:
           runAsUser: 0
@@ -64,7 +61,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: ELASTICSEARCH_HOST
-          value: "elasticsearch.$(NAMESPACE).svc.cluster.local"
+          value: "elasticsearch-master.$(NAMESPACE).svc.cluster.local"
         - name: ELASTICSEARCH_PORT
           value: "9200"
         - name: KAFKA_HOST

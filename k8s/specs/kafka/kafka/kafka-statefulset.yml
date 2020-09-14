@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "kafka"
@@ -28,7 +28,12 @@ spec:
         image: "docker.io/bitnami/kafka:2.2.0"
         imagePullPolicy: "Always"
         resources:
-          null
+          limits:
+            cpu: 350m
+            memory: 1000Mi
+          requests:
+            cpu: 50m
+            memory: 200Mi
         env:
         - name: MY_POD_IP
           valueFrom:

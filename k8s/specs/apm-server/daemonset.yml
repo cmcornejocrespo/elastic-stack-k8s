@@ -1,11 +1,14 @@
-apiVersion: extensions/v1beta1
-kind: DaemonSet
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: apm-server
   namespace: elastic
   labels:
     app: apm-server
 spec:
+  selector:
+    matchLabels:
+      app: apm-server
   template:
     metadata:
       labels:
@@ -14,13 +17,7 @@ spec:
       initContainers:
         - name: wait-for-elasticsearch
           image: appropriate/curl
-          resources:
-            limits:
-              cpu: 150m
-              memory: 50Mi
-            requests:
-              cpu: 150m
-              memory: 50Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -32,13 +29,13 @@ spec:
           - "while [ $(curl -sw %{http_code} http://kibana.${NAMESPACE}.svc.cluster.local:5601/api/status -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: apm-server
-        image: docker.elastic.co/apm/apm-server:6.8.0
+        image: docker.elastic.co/apm/apm-server:7.9.2
         resources:
           limits:
-            cpu: 100m
-            memory: 200Mi
+            cpu: 200m
+            memory: 300Mi
           requests:
-            cpu: 100m
+            cpu: 500m
             memory: 100Mi
         ports:
         - containerPort: 8200

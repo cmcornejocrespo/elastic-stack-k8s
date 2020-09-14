@@ -1,5 +1,5 @@
 # Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metricbeat
@@ -7,6 +7,9 @@ metadata:
   labels:
     app: metricbeat
 spec:
+  selector:
+    matchLabels:
+      app: metricbeat
   template:
     metadata:
       labels:
@@ -36,7 +39,7 @@ spec:
           - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: metricbeat
-        image: docker.elastic.co/beats/metricbeat:6.8.0
+        image: docker.elastic.co/beats/metricbeat:7.9.2
         args: [
           "-e"
         ]

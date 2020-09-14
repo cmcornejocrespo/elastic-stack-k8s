@@ -21,7 +21,7 @@ data:
     xpack:
       monitoring:
         enabled: true
-        elasticsearch.hosts: http://elasticsearch:9200
+        elasticsearch.hosts: http://elasticsearch-master:9200
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -51,24 +51,24 @@ data:
         topics => ["auditbeat"]
         codec => "json"
       }
-      kafka {
-        id => "heartbeat"
-        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
-        topics => ["heartbeat"]
-        codec => "json"
-      }
-      kafka {
-        id => "metricbeat"
-        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
-        topics => ["metricbeat"]
-        codec => "json"
-      }
-      kafka {
-        id => "apm-server"
-        bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
-        topics_pattern => "apm.*"
-        codec => "json"
-      }
+      # kafka {
+      #   id => "heartbeat"
+      #   bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+      #   topics => ["heartbeat"]
+      #   codec => "json"
+      # }
+      # kafka {
+      #   id => "metricbeat"
+      #   bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+      #   topics => ["metricbeat"]
+      #   codec => "json"
+      # }
+      # kafka {
+      #   id => "apm-server"
+      #   bootstrap_servers => "kafka-0.kafka-headless.elastic:9092"
+      #   topics_pattern => "apm.*"
+      #   codec => "json"
+      # }
     }
   filter_main: |-
     filter {
@@ -96,7 +96,7 @@ data:
   output_main: |-
     output {
         elasticsearch {
-          hosts => ["elasticsearch:9200"]
+          hosts => ["http://elasticsearch-master:9200"]
           index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
         }
     }

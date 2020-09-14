@@ -9,13 +9,7 @@ spec:
       initContainers:
       - name: wait-for-elasticsearch
         image: appropriate/curl
-        resources:
-          limits:
-            cpu: 150m
-            memory: 50Mi
-          requests:
-            cpu: 150m
-            memory: 50Mi
+        resources: {}
         env:
           - name: NAMESPACE
             valueFrom:
@@ -24,17 +18,11 @@ spec:
         args:
         - "sh"
         - "-c"
-        - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
+        - "while [ $(curl -sw %{http_code} http://elasticsearch-master.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: create-packetbeat-template
-        image: docker.elastic.co/beats/packetbeat:6.8.0
-        resources:
-          limits:
-            cpu: 150m
-            memory: 50Mi
-          requests:
-            cpu: 150m
-            memory: 50Mi
+        image: docker.elastic.co/beats/packetbeat:7.9.1
+        resources: {}
         securityContext:
           runAsUser: 0
           capabilities:
@@ -42,15 +30,9 @@ spec:
             - NET_ADMIN
         command: [ "packetbeat", "setup", "--template",
           "-E", "output.kafka.enabled=false",
-          "-E", 'output.elasticsearch.hosts=["elasticsearch.elastic.svc.cluster.local:9200"]' ]
+          "-E", 'output.elasticsearch.hosts=["elasticsearch-master.elastic.svc.cluster.local:9200"]' ]
       - name: force-kibana-new-documents
         image: "appropriate/curl"
-        resources:
-          limits:
-            cpu: 150m
-            memory: 50Mi
-          requests:
-            cpu: 150m
-            memory: 50Mi
-        command: ["curl", "-XDELETE", "elasticsearch.elastic.svc.cluster.local:9200/packetbeat-*"]
+        resources: {}
+        command: ["curl", "-XDELETE", "elasticsearch-master.elastic.svc.cluster.local:9200/packetbeat-*"]
       restartPolicy: Never

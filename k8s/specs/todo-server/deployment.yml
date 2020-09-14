@@ -18,13 +18,7 @@ spec:
       initContainers:
         - name: wait-for-apm-server
           image: appropriate/curl
-          resources:
-            limits:
-              cpu: 150m
-              memory: 50Mi
-            requests:
-              cpu: 150m
-              memory: 50Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:

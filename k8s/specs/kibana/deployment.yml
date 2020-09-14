@@ -18,13 +18,7 @@ spec:
       initContainers:
         - name: wait-for-elasticsearch
           image: appropriate/curl
-          resources:
-            limits:
-              cpu: 150m
-              memory: 50Mi
-            requests:
-              cpu: 150m
-              memory: 50Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -33,10 +27,17 @@ spec:
           args:
           - "sh"
           - "-c"
-          - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
+          - "while [ $(curl -sw %{http_code} http://elasticsearch-master-headless.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
         - name: kibana
-          image: docker.elastic.co/kibana/kibana:6.8.0
+          image: docker.elastic.co/kibana/kibana:7.9.1
+          env:
+          - name: ELASTICSEARCH_HOSTS
+            value: "http://elasticsearch-master:9200"
+          - name: SERVER_HOST
+            value: "0.0.0.0"
+          - name: NODE_OPTIONS
+            value: --max-old-space-size=1800
           ports:
           - containerPort: 5601
             name: http
@@ -57,7 +58,7 @@ spec:
               memory: 768Mi
             requests:
               cpu: 100m
-              memory: 512Mi
+              memory: 256Mi
           volumeMounts:
             - name: kibana-config
               mountPath: /usr/share/kibana/kibana.yml

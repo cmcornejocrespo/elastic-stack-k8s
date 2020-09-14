@@ -1,5 +1,5 @@
 # Deploy a auditbeat instance per node for node metrics retrieval
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: auditbeat
@@ -7,6 +7,9 @@ metadata:
   labels:
     app: auditbeat
 spec:
+  selector:
+    matchLabels:
+      app: auditbeat
   template:
     metadata:
       labels:
@@ -19,13 +22,7 @@ spec:
       initContainers:
         - name: wait-for-elasticsearch
           image: appropriate/curl
-          resources:
-            limits:
-              cpu: 100m
-              memory: 100Mi
-            requests:
-              cpu: 50m
-              memory: 50Mi
+          resources: {}
           env:
             - name: NAMESPACE
               valueFrom:
@@ -34,10 +31,10 @@ spec:
           args:
           - "sh"
           - "-c"
-          - "while [ $(curl -sw %{http_code} http://elasticsearch.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
+          - "while [ $(curl -sw %{http_code} http://elasticsearch-master.${NAMESPACE}.svc.cluster.local:9200/_cluster/health?pretty -o /dev/null) -ne 200 ]; do sleep 15; done"
       containers:
       - name: auditbeat
-        image: docker.elastic.co/beats/auditbeat:6.8.0
+        image: docker.elastic.co/beats/auditbeat:7.9.1
         args: [
           "-e"
         ]
@@ -47,8 +44,8 @@ spec:
             add: ["AUDIT_CONTROL", "AUDIT_READ"]
         resources: 
           limits:
-            cpu: 60m
-            memory: 60Mi
+            cpu: 200m
+            memory: 100Mi
           requests:
             cpu: 30m
             memory: 30Mi
